@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Undangan Pernikahan Ropi & Uum</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Montserrat:wght@300;400;600&family=Great+Vibes&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --ivory: #fdfaf5;
+            --beige: #d4b996;
+            --greige: #8d8681;
+            --glass-bg: rgba(255, 250, 240, 0.6);
+            --text: #44403c;
+        }
+        <style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Mencegah scroll liar sebelum undangan dibuka */
+    background-color: #1a1a1a;
+  }
+
+  .mobile-container {
+    width: 100%;
+    max-width: 500px; /* Ukuran maksimal layar HP */
+    height: 100vh;
+    height: -webkit-fill-available; /* Perbaikan untuk browser Safari/iPhone */
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #1a1a1a; 
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
+        }
+
+        .mobile-container {
+            width: 100%; max-width: 450px; 
+            height: 100%; position: relative;
+            background-color: #000; overflow: hidden; z-index: 2;
+        }
+
+        #bgPhoto {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: 1; 
+            object-fit: cover;
+            background-image: url('https://lh3.googleusercontent.com/d/1uE7YkbkjXkd49orhCBv33arMPItBMC27?q=80&w=2070&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+            transition: opacity 1s ease;
+        }
+
+        #bgVideo {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: 0; 
+            object-fit: cover;
+            opacity: 0; 
+            transition: opacity 1s ease;
+        }
+
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3); z-index: 1;
+        }
+
+        .music-control {
+            position: absolute; top: 20px; right: 20px; z-index: 1000;
+            background: rgba(253, 250, 245, 0.8); width: 40px; height: 40px;
+            border-radius: 50%; display: none; justify-content: center; align-items: center;
+            color: var(--beige); border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .music-control.playing i { animation: spin 4s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .slider {
+            display: flex; width: 900%; height: 100%;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; z-index: 2;
+        }
+
+        section {
+            width: 11.11%; height: 100%; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; position: relative;
+        }
+
+        .page-content {
+            background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 25px 20px; border-radius: 25px; color: var(--text);
+            width: 100%; max-height: 75vh; overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .navbar {
+            position: absolute; bottom: 0; width: 100%; 
+            background: rgba(253, 250, 245, 0.98);
+            display: none; justify-content: space-around;
+            padding: 10px 1px; z-index: 100; 
+            border-top: 1px solid rgba(212, 185, 150, 0.2);
+        }
+        .nav-item { 
+            color: var(--greige); text-align: center; 
+            cursor: pointer; font-size: 0.45rem; 
+            flex: 1; transition: 0.3s;
+        }
+        .nav-item i { font-size: 0.85rem; display: block; margin-bottom: 2px; }
+        .nav-item.active { color: var(--beige); font-weight: 700; }
+
+        .btn-open {
+            background: var(--ivory); color: var(--beige); padding: 12px 30px;
+            border-radius: 30px; font-weight: 600; margin-top: 25px;
+            cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .photo-frame { width: 80px; height: 80px; border-radius: 50%; margin: 8px auto; border: 2px solid var(--beige); overflow: hidden; background: var(--ivory); padding: 2px; }
+        .photo-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        
+        #timer, #timer2 { display: flex; gap: 4px; justify-content: center; margin: 10px 0; }
+        .time-unit { background: var(--beige); color: white; padding: 6px; border-radius: 8px; min-width: 45px; font-size: 0.7rem; line-height: 1.2; }
+        
+        .card { border: 1px solid rgba(212, 185, 150, 0.3); padding: 12px; margin-top: 10px; border-radius: 12px; background: rgba(253, 250, 245, 0.3); }
+        .maps-btn { display: inline-block; padding: 8px 15px; background: var(--beige); color: white; text-decoration: none; border-radius: 20px; font-size: 0.75rem; margin-top: 10px; }
+        
+        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; }
+        #lightbox img { max-width: 90%; max-height: 80%; border: 2px solid white; }
+        /* Style Loading Elegan Tema Ropi & Uum */
+#loader {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: #1a1a1a; /* Background gelap agar transisi ke video smooth */
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    z-index: 9999;
+    transition: opacity 0.8s ease, visibility 0.8s;
+}
+.loader-content { text-align: center; color: var(--ivory); }
+.loader-text-small { 
+    font-family: 'Montserrat', sans-serif; 
+    font-size: 0.7rem; letter-spacing: 5px; 
+    text-transform: uppercase; opacity: 0.6;
+    animation: pulse 2s infinite;
+}
+.loader-names { 
+    font-family: 'Great Vibes', cursive; 
+    font-size: 2.8rem; margin-top: 10px; 
+    color: var(--beige);
+}
+.loader-line {
+    width: 50px; height: 1px; background: var(--beige);
+    margin: 15px auto; transform: scaleX(0);
+    animation: growLine 1.2s forwards ease-in-out;
+}
+@keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+@keyframes growLine { to { transform: scaleX(1); } }
+    </style>
+</head>
+<body>
+
+<div id="loader">
+    <div class="loader-content">
+        <p class="loader-text-small"></p>
+        <div class="loader-line"></div>
+       <span style="font-weight: 900; letter-spacing: 0.5px;">#<span style="color: var(--beige);">ROUM</span>ahuntukpulang</span>
+                        </div>
+    </div>
+</div>
+<div id="lightbox" onclick="this.style.display='none'"><img id="lightboxImg"></div>
+
+<div class="mobile-container">
+    <div id="bgPhoto"></div>
+    <video muted loop playsinline id="bgVideo">
+        <source src="https://www.dropbox.com/scl/fi/xn6jcxon70m1ogbwrl08c/css-vid.mp4?rlkey=gpe6d30cu4tojhotgtp1toojo&raw=1" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
+    <button id="musicBtn" class="music-control" onclick="toggleMusic()"><i class="fas fa-music"></i></button>
+    <audio id="myAudio" loop><source src="https://res.cloudinary.com/dw4xpenmc/video/upload/v1775198536/Sal_Priadi_-_Kita_usahakan_rumah_itu_Official_Lyric_Video_mfcgn0.mp3" type="audio/mpeg"></audio>
+
+    <div class="slider" id="mainSlider">
+        <section>
+            <div style="margin-top: 290px">
+                <div style="color: var(--ivory);">
+                    <p style="font-weight: 800; letter-spacing: 4px; font-size: 0.8rem;">THE WEDDING OF</p>
+                    <h2 style="font-family: 'Dancing Script'; font-size: 3rem; margin: 10px 0;">Ropi & Uum</h2>
+                    <div style="margin-top: 30px; z-index: 2;">
+                        <p style="letter-spacing: 2px; color: var(--ivory); font-size: 0.7rem;">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+                        <h2 id="guestName" style="color: var(--ivory); font-size: 1.2rem; margin: 10px 0;"><?= to ?></h2>
+                        <button class="btn-open" onclick="openInvitation()">Buka Undangan</button>
+                        <div style="margin-top: 10px">
+                            <span style="font-weight: 900; letter-spacing: 0.5px;">#<span style="color: var(--beige);">ROUM</span>ahuntukpulang</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div style="color: var(--ivory);">
+                <p style="letter-spacing: 4px; font-size: 0.7rem;">THE WEDDING OF</p>
+                <h2 style="font-family: 'Great Vibes'; font-size: 3rem; margin: 10px 0;">Ropi & Uum</h2>
+                <p style="font-size: 1rem; font-weight: 300; letter-spacing: 2px;">17 . 07 . 2026</p>
+                <div id="timer" style="margin-top: 25px;">
+                    <div class="time-unit"><span id="days">0</span><br>Hari</div>
+                    <div class="time-unit"><span id="hours">0</span><br>Jam</div>
+                    <div class="time-unit"><span id="mins">0</span><br>Min</div>
+                    <div class="time-unit"><span id="secs">0</span><br>Det</div>
+                </div>
+                <div style="margin-top: 50px;">
+                    <span style="font-weight: 900; letter-spacing: 0.5px;">#<span style="color: var(--beige);">ROUM</span>ahuntukpulang</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="page-content">
+                <span style="font-weight: 900; letter-spacing: 0.5px;">#<span style="color: var(--beige);">ROUM</span>ahuntukpulang</span>
+                <div style="margin-top: 30px;">
+                    <h2 style="font-size: 1.4rem; color: var(--beige);">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</h2>
+                    <p style="font-size: 0.65rem; margin: 15px 0; line-height: 1.3; color: var(--text);">"Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang." <br><b>(QS. Ar-Rum: 21)</b></p>
+                    <div style="margin-top: 50px;">
+                    <hr>
+                    <div style="text-align: center; width: 100%; margin: 20px 0;">
+    
+    <div style="margin-top: 30px;">
+    <div style="display: inline-block; text-align: left;">
+    <div style="font-family: 'Playfair Display'; font-size: 2rem; color: var(--text); line-height: 1; margin-bottom: 5px;">
+        Kedua
+    </div>
+    
+    <div style="font-family: 'Great Vibes'; font-size: 2.2rem; color: var(--text); line-height: 0.8; padding-left: 3.8rem;">
+        Mempelai
+    </div>
+</div>
+
+</div>
+                    <div style="margin-top: 10px;">
+                    <p style="font-size: 0.9rem; margin-top: 15px; color: var(--text);"><b>Assalamualaikum Wr. Wb</b></p>
+                    <p style="font-size: 0.7rem; margin: 8px 0; color: var(--text);">Tanpa mengurangi rasa hormat, kami mengundang Anda di hari bahagia kami:</p>
+                    
+                    <div style="margin-top: 50px;">
+                    <div class="photo-frame"><img src="https://lh3.googleusercontent.com/d/1hVaE6EB8As0UOhSChOocPSsycRbJMURs?auto=format&fit=crop&w=800&q=80" alt="Pria"></div>
+                    <h3 style="font-family: 'Dancing Script'; font-size: 2rem;">Muhammad Ropi S.ST</h3>
+                    <a href="https://www.instagram.com/ropi_muhammad23/" target="_blank" style="text-decoration: none; color: var(--beige); font-size: 0.8rem;"><i class="fab fa-instagram"></i> @ropi_muhammad23</a>
+                    <p style="font-size: 0.7rem; margin-top: 5px;">Anak ketiga dari </p>
+                    <p style="font-size: 0.7rem; margin-top: 5px;">Bapak Miyul Bestprianto & Ibu Siti Rokayah (Almh.)</p>
+                    
+                    <div style="margin: 15px 0; font-family: 'Great Vibes'; font-size: 1.8rem; color: var(--beige); opacity: 0.6;">&</div>
+                    
+                    <div class="photo-frame"><img src="https://lh3.googleusercontent.com/d/1VNZQ_e__GKX0Hgnx2bpbQrLU41Dn7bkn?auto=format&fit=crop&w=800&q=80" alt="Wanita"></div>
+                    <h3 style="font-family: 'Dancing Script'; font-size: 2rem;">Ummu Rahimah S.M</h3>
+                    <a href="https://www.instagram.com/ummurahimah__/" target="_blank" style="text-decoration: none; color: var(--beige); font-size: 0.8rem;"><i class="fab fa-instagram"></i> @ummurahimah__</a>
+                    <p style="font-size: 0.7rem; margin-top: 5px;">Anak Pertama dari</p>
+                    <p style="font-size: 0.7rem; margin-top: 5px;">Bapak Syafril M S.Pd & Ibu Rismaningsih</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="page-content">
+                <h3 style="font-family: 'Playfair Display';">Save The Date</h3>
+                <div id="timer2">
+                    <div class="time-unit"><span id="days2">0</span><br><small>Hari</small></div>
+                    <div class="time-unit"><span id="hours2">0</span><br><small>Jam</small></div>
+                    <div class="time-unit"><span id="mins2">0</span><br><small>Menit</small></div>
+                    <div class="time-unit"><span id="secs2">0</span><br><small>Detik</small></div>
+                </div>
+                
+                <div class="card">
+                    <h4 style="color: var(--beige); text-transform: uppercase; font-size: 0.7rem;">Akad Nikah</h4>
+                    <p style="font-size: 0.85rem; font-weight: 600;">Jumat, 17 Juli 2026</p>
+                    <p style="font-size: 0.75rem;">09:00 WIB - Selesai</p>
+                    <hr style="margin: 10px 0; opacity: 0.2;">
+                    <h4 style="color: var(--beige); text-transform: uppercase; font-size: 0.7rem;">Resepsi (Wanita)</h4>
+                    <p style="font-size: 0.85rem; font-weight: 600;">Sabtu, 18 Juli 2026</p>
+                    <p style="font-size: 0.75rem;">11:00 WIB - Selesai</p>
+                    <a href="https://maps.app.goo.gl/PBqX4K4226oN6hGP6" target="_blank" class="maps-btn">📍 Google Maps</a>
+                </div>
+                
+                <div class="card">
+                    <h4 style="color: var(--beige); text-transform: uppercase; font-size: 0.7rem;">Resepsi (Pria)</h4>
+                    <p style="font-size: 0.85rem; font-weight: 600;">Minggu, 19 Juli 2026</p>
+                    <p style="font-size: 0.75rem;">11:00 WIB - Selesai</p>
+                    <a href="https://maps.app.goo.gl/PFtNKQueUrBjh3Py6" target="_blank" class="maps-btn">📍 Google Maps</a>
+                </div>
+            </div>
+        </section>
+
+        <section>
+    <div class="page-content">
+        <h3 style="margin-bottom: 20px;">Our Gallery</h3>
+        
+        <div class="gallery-wrapper" style="display: flex; gap: 20px; align-items: flex-start;">
+            
+            <div class="gallery-text" style="flex: 1; text-align: justify; color: var(--text);">
+                <p style="font-size: 0.9rem; margin-bottom: 12px; text-align: center; line-height: 1.3;">
+                    <b style="font-family: 'Great Vibes';font-weight: 700;"><b>love Story</b><br>
+                        <span style="font-family: 'Dancing Script'; font-weight: 900; letter-spacing: 0.5px;">Jejak Waktu & Jarak</span>
+                    </b>
+                </p>
+
+                <div style="line-height: 1.6;">
+                    <p style="font-size: 0.65rem; margin-bottom: 8px;">
+                        11 September 2016  —
+kita adalah dua hal yang belum usai dengan diri sendiri. Merajut dekapan yang sebenarnya masih terasa asing, berusaha mencari sandaran  hingga enggan diabaikan; inikah tempat pulang?
+                    </p>
+                    <p style="font-size: 0.65rem; margin-bottom: 8px;">
+                        2018  —Ada masa di mana jarak menjadi tamu yang paling berisik; memisahkan raga, pelan-pelan mengubah arah langkah dan berjalan masing-masing.
+                    </p>
+                    <p style="font-size: 0.65rem; margin-bottom: 8px;">
+                        2019  —Hingga akhirnya sadar, yang hilang bukan arahnya saja;  kita sudah saling meninggalkan. Namun, di setiap persimpangan selalu ada arah untuk bersama dalam satu tujuan. Sebab bertahan adalah perihal pulang dan aman.
+                    </p>
+                    <p style="font-size: 0.65rem;">
+                        2026  —Kini, segala tunggu telah bertemu ujungnya. Kita memilih untuk menyatukan doa, membangun atap di bawah restu yang sama, dalam janji suci dan ikatan yang kita sebut #ROUMahuntukpulang.
+                    </p>
+                </div>
+            </div>
+
+            <div class="gallery-scroll-container" style="flex: 1; max-height: 450px; overflow-y: auto; padding-right: 5px;">
+                <style>
+                    /* Container untuk menampung gradiasi overlay */
+                    .img-vintage-wrapper {
+                        position: relative;
+                        width: 100%;
+                        margin-bottom: 10px;
+                        overflow: hidden;
+                        border-radius: 8px; /* Sudut tumpul estetik */
+                        cursor: pointer;
+                        /* Menghilangkan frame putih lama */
+                        border: none !important; 
+                        box-shadow: none !important;
+                    }
+
+                    /* Style dasar foto item */
+                    .img-vintage-wrapper .photo-item {
+                        width: 100%;
+                        height: auto;
+                        display: block;
+                        object-fit: cover;
+                        /* Efek Warna Vintage (Sepia & Kontras Rendah) */
+                        filter: sepia(50%) contrast(90%) brightness(95%);
+                        transition: all 0.5s ease;
+                        margin-bottom: 0 !important; /* Reset margin lama */
+                        border: none !important; /* Pastikan border hilang */
+                    }
+
+                    /* Lapisan Gradiasi Gelap di atas foto */
+                    .img-vintage-wrapper::after {
+                        content: '';
+                        position: absolute;
+                        top: 0; left: 0; width: 100%; height: 100%;
+                        /* Gradiasi dari transparan di tengah ke gelap di pinggir */
+                        background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+                        transition: opacity 0.5s ease;
+                        opacity: 1; /* Muncul secara default */
+                    }
+
+                    /* Efek saat kursor hover atau layar disentuh */
+                    .img-vintage-wrapper:hover .photo-item {
+                        filter: sepia(0%) contrast(100%) brightness(100%); /* Warna asli kembali */
+                        transform: scale(1.05); /* Sedikit zoom in estetik */
+                    }
+
+                    .img-vintage-wrapper:hover::after {
+                        opacity: 0; /* Gradiasi hilang saat dilihat */
+                    }
+                </style>
+
+                <div class="gallery-grid" id="galleryGrid" style="display: grid; grid-template-columns: 1fr; gap: 0;">
+                    
+                    <div class="img-vintage-wrapper" onclick="openLightbox(0)">
+                        <img src="https://lh3.googleusercontent.com/d/1uWVYuX9sHLHpFEQNe2xyzcrSIuerhSXF" class="photo-item" alt="Foto 1">
+                    </div>
+
+                    <div class="img-vintage-wrapper" onclick="openLightbox(1)">
+                        <img src="https://lh3.googleusercontent.com/d/1hGMdcKiScyqDQHmSZ-gRVGxhLcSdcGAM" class="photo-item" alt="Foto 2">
+                    </div>
+
+                    <div class="img-vintage-wrapper" onclick="openLightbox(2)">
+                        <img src="https://lh3.googleusercontent.com/d/1r8u0EiQ4dQSBzscNirDxCjne75p43t4B" class="photo-item" alt="Foto 3">
+                    </div>
+
+                    <div class="img-vintage-wrapper" onclick="openLightbox(3)">
+                        <img src="https://lh3.googleusercontent.com/d/1DDw-aCTBd57Y7t4y02GR-0n68HCu8tPP" class="photo-item" alt="Foto 4">
+                    </div>
+
+                    <div class="img-vintage-wrapper" onclick="openLightbox(4)">
+                        <img src="https://lh3.googleusercontent.com/d/12Q-PtccJ4ylAlbcBg7QBHIK6tBYooeSD" class="photo-item" alt="Foto 5">
+                    </div>
+                    
+                    <div class="img-vintage-wrapper" onclick="openLightbox(5)">
+                        <img src="https://lh3.googleusercontent.com/d/1QntMKuxSt0DPWR6Hjy7Zevysmq_3XItM" class="photo-item" alt="Foto 6">
+                    </div>
+
+                    <div class="img-vintage-wrapper" onclick="openLightbox(6)">
+                        <img src="https://lh3.googleusercontent.com/d/1ieZJc-l6oY7PAxmTuiKd4RDeoZVXXBDv" class="photo-item" alt="Foto 7">
+                    </div>
+
+                    <div class="img-vintage-wrapper" onclick="openLightbox(7)">
+                        <img src="https://lh3.googleusercontent.com/d/1nowpDAbW4jmLFFyJ2SuhZdKG9R1BxSnr" class="photo-item" alt="Foto 8">
+                    </div>
+
+                    <div class="img-vintage-wrapper" onclick="openLightbox(8)">
+                        <img src="https://lh3.googleusercontent.com/d/1EGnH-qm5aKn6yb8Boxgxk8zTE1l14Bdf" class="photo-item" alt="Foto 9">
+                    </div>
+
+                    <div class="img-vintage-wrapper" onclick="openLightbox(9)">
+                        <img src="https://lh3.googleusercontent.com/d/15ths5ca_p6S8sj2N_Z0LZ3czZ2EtYOlv" class="photo-item" alt="Foto 10">
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <section>
+            <div class="page-content">
+                <i class="fas fa-video" style="font-size: 1.5rem; color: var(--beige);"></i>
+                <h3 style="font-size: 1rem; margin: 10px 0;">Live Streaming</h3>
+                <a href="#" class="card" style="display: block; text-decoration: none; color: inherit; background: #fee2e2;">YouTube Live</a>
+                <a href="#" class="card" style="display: block; text-decoration: none; color: inherit; background: #f0fdf4;">Instagram Live</a>
+            </div>
+        </section>
+
+        <section>
+            <div class="page-content">
+                <h3 style="margin-bottom: 20px;">RESERVASI</h3>
+                <div class="card" style="text-align: left;">
+                    <label style="font-size: 0.75rem; color: var(--greige);">Nama Lengkap</label>
+                    <input type="text" id="rsvpName" placeholder="Nama Anda" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); margin: 5px 0 15px; background: #fff;">
+                    
+                    <label style="font-size: 0.75rem; color: var(--greige);">Konfirmasi Kehadiran</label>
+                    <select id="rsvpStatus" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); margin: 5px 0 15px; background: #fff;">
+                        <option value="Hadir">Saya berencana hadir</option>
+                        <option value="Ragu">Saya masih ragu</option>
+                        <option value="Tidak Hadir">Maaf, saya tidak bisa hadir</option>
+                    </select>
+
+                    <label style="font-size: 0.75rem; color: var(--greige);">Pesan Ucapan</label>
+                    <textarea id="rsvpMsg" placeholder="Tulis ucapan doa..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); margin: 5px 0 15px; height: 60px; font-family: inherit; background: #fff;"></textarea>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="submitRSVP()" style="flex: 2; background: var(--beige); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer;">Kirim Pesan</button>
+                        <button onclick="toggleStickerPopup(true)" style="flex: 1; background: #fff; color: var(--beige); border: 1px solid var(--beige); padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer;"><i class="far fa-sticky-note"></i> Sticker</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-around; margin-top: 25px; font-size: 0.7rem; color: var(--dark-greige);">
+                    <div style="background: rgba(255,255,255,0.5); padding: 10px; border-radius: 10px; min-width: 70px;"><b>Hadir</b><br><span id="countHadir">124</span></div>
+                    <div style="background: rgba(255,255,255,0.5); padding: 10px; border-radius: 10px; min-width: 70px;"><b>Ragu</b><br><span id="countRagu">12</span></div>
+                    <div style="background: rgba(255,255,255,0.5); padding: 10px; border-radius: 10px; min-width: 70px;"><b>Tidak</b><br><span id="countTidak">5</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="page-content">
+                <h3 style="font-size: 1rem;">Wedding Gift</h3>
+                <div class="card">
+                    <p style="font-size: 0.7rem;">Transfer Bank BCA</p>
+                    <p style="font-weight: 700;">1234567890</p>
+                    <p style="font-size: 0.6rem;">a/n Muhammad Ropi</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="page-content">
+                <h2 style="font-family: 'Great Vibes'; font-size: 1.8rem;">Terima Kasih</h2>
+                <p style="font-size: 0.7rem; margin-top: 15px;">Sampai jumpa di hari bahagia kami.</p>
+                <p style="font-weight: 700; margin-top: 10px; color: var(--beige);">Ropi & Uum</p>
+            </div>
+        </section>
+    </div>
+
+    <nav class="navbar" id="bottomNav">
+        <div class="nav-item active" onclick="goToSlide(1)"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="nav-item" onclick="goToSlide(2)"><i class="fas fa-heart"></i><span>Mempelai</span></div>
+        <div class="nav-item" onclick="goToSlide(3)"><i class="fas fa-calendar-alt"></i><span>Acara</span></div>
+        <div class="nav-item" onclick="goToSlide(4)"><i class="fas fa-images"></i><span>Galeri</span></div>
+        <div class="nav-item" onclick="goToSlide(5)"><i class="fas fa-video"></i><span>Live</span></div>
+        <div class="nav-item" onclick="goToSlide(6)"><i class="fas fa-edit"></i><span>RSVP</span></div>
+        <div class="nav-item" onclick="goToSlide(7)"><i class="fas fa-gift"></i><span>Kado</span></div>
+        <div class="nav-item" onclick="goToSlide(8)"><i class="fas fa-users"></i><span>Closing</span></div>
+    </nav>
+</div>
+
+<script>
+  // Menghilangkan loading saat semua elemen (foto/video/font) selesai dimuat
+window.addEventListener('load', function() {
+    const loader = document.getElementById('loader');
+    setTimeout(() => {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+            loader.style.visibility = 'hidden';
+        }, 800);
+    }, 1500); // Loader muncul selama 1.5 detik agar kesan "menunggu" terasa
+});
+    let currentSlide = 0;
+    const slider = document.getElementById('mainSlider');
+    const audio = document.getElementById('myAudio');
+    const musicBtn = document.getElementById('musicBtn');
+    const bgPhoto = document.getElementById('bgPhoto');
+    const bgVideo = document.getElementById('bgVideo');
+
+    function openInvitation() {
+        bgPhoto.style.opacity = '0';
+        bgVideo.style.opacity = '1';
+        bgVideo.play();
+
+        goToSlide(1); 
+        document.getElementById('bottomNav').style.display = 'flex';
+        musicBtn.style.display = 'flex';
+        audio.play();
+        musicBtn.classList.add('playing');
+        startCountdown();
+    }
+
+    function goToSlide(index) {
+        if (index < 0) return; 
+        currentSlide = index;
+        slider.style.transform = `translateX(-${index * 11.11}%)`;
+        
+        document.querySelectorAll('.nav-item').forEach((item, i) => {
+            item.classList.toggle('active', (i + 1) === index);
+        });
+    }
+
+    function toggleMusic() {
+        if (audio.paused) { audio.play(); musicBtn.classList.add('playing'); }
+        else { audio.pause(); musicBtn.classList.remove('playing'); }
+    }
+
+    function showImg(src) {
+        document.getElementById('lightboxImg').src = src;
+        document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    function startCountdown() {
+        const target = new Date("July 17, 2026 09:00:00").getTime();
+        
+        setInterval(() => {
+            const now = new Date().getTime();
+            const gap = target - now;
+            
+            if (gap > 0) {
+                const d = Math.floor(gap / 86400000);
+                const h = Math.floor((gap % 86400000) / 3600000);
+                const m = Math.floor((gap % 3600000) / 60000);
+                const s = Math.floor((gap % 60000) / 1000);
+
+                // Update Countdown Utama (Home)
+                document.getElementById("days").innerText = d;
+                document.getElementById("hours").innerText = h;
+                document.getElementById("mins").innerText = m;
+                document.getElementById("secs").innerText = s;
+
+                // Update Countdown Menu Acara (ID Unik days2, dsb)
+                if(document.getElementById("days2")) {
+                    document.getElementById("days2").innerText = d;
+                    document.getElementById("hours2").innerText = h;
+                    document.getElementById("mins2").innerText = m;
+                    document.getElementById("secs2").innerText = s;
+                }
+            }
+        }, 1000);
+    }
+    
+</script>
+
+</body>
+</html>
